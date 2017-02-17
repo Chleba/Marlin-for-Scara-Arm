@@ -126,6 +126,10 @@ void Config_StoreSettings()  {
   EEPROM_WRITE_VAR(i, max_e_jerk);
   EEPROM_WRITE_VAR(i, add_homing);
 
+  #ifdef SCARA
+    EEPROM_WRITE_VAR(i, arm_adj);
+  #endif
+
   #ifdef DELTA
     EEPROM_WRITE_VAR(i, endstop_adj);               // 3 floats
     EEPROM_WRITE_VAR(i, delta_radius);              // 1 float
@@ -261,6 +265,10 @@ void Config_RetrieveSettings() {
     EEPROM_READ_VAR(i, max_e_jerk);
     EEPROM_READ_VAR(i, add_homing);
 
+    #ifdef SCARA
+      EEPROM_READ_VAR(i, arm_adj);
+    #endif
+
     #ifdef DELTA
       EEPROM_READ_VAR(i, endstop_adj);                // 3 floats
       EEPROM_READ_VAR(i, delta_radius);               // 1 float
@@ -387,6 +395,10 @@ void Config_ResetDefault() {
   max_z_jerk = DEFAULT_ZJERK;
   max_e_jerk = DEFAULT_EJERK;
   add_homing[X_AXIS] = add_homing[Y_AXIS] = add_homing[Z_AXIS] = 0;
+
+  #ifdef SCARA
+    arm_adj[X_AXIS] = arm_adj[Y_AXIS] = arm_adj[Z_AXIS] = 0;
+  #endif
 
   #ifdef DELTA
     endstop_adj[X_AXIS] = endstop_adj[Y_AXIS] = endstop_adj[Z_AXIS] = 0;
@@ -545,6 +557,20 @@ void Config_PrintSettings(bool forReplay) {
   SERIAL_ECHOPAIR(" Y", add_homing[Y_AXIS] );
   SERIAL_ECHOPAIR(" Z", add_homing[Z_AXIS] );
   SERIAL_EOL;
+
+  #ifdef SCARA
+    // M998
+    SERIAL_ECHO_START;
+    if (!forReplay) {
+      SERIAL_ECHOLNPGM("Endstop offset (mm):");
+      SERIAL_ECHO_START;
+    }
+    SERIAL_ECHOPAIR("  M998 X", arm_adj[X_AXIS] );
+    SERIAL_ECHOPAIR(" Y", arm_adj[Y_AXIS] );
+    SERIAL_ECHOPAIR(" Z", arm_adj[Z_AXIS] );
+    SERIAL_EOL;
+  #endif
+
 
   #ifdef DELTA
     SERIAL_ECHO_START;

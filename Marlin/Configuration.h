@@ -34,18 +34,15 @@ Here are some standard links for getting your machine calibrated:
 #define SCARA
 #define scara_segments_per_second 180 // too much will decrease performance!
 // Length of inner support arm
-#define Linkage_1 122 // mm - Preprocessor cannot handle decimal points...
+#define Linkage_1 130 // mm - Preprocessor cannot handle decimal points!
 // Length of outer support arm
-#define Linkage_2 126 // mm - Preprocessor cannot handle decimal points...
+#define Linkage_2 130 // mm - Preprocessor cannot handle decimal points!
 
 // SCARA tower offset (position of Tower relative to bed zero position)
 // This needs to be reasonably accurate as it defines the printbed position in the SCARA space.
-#define SCARA_offset_x   30 // mm
-#define SCARA_offset_y -100 // mm
+#define SCARA_offset_x   30.0 // mm
+#define SCARA_offset_y -100.0 // mm
 #define SCARA_RAD2DEG 57.2957795  // to convert RAD to degrees
-
-#define THETA_HOMING_OFFSET 0 // calculatated from command M360 / M114
-#define PSI_HOMING_OFFSET   0 // calculatated from command M364 / M114
 
 // Helper variables to make kinematics faster
 #define L1_2 sq(Linkage_1) // Constant
@@ -79,7 +76,7 @@ Here are some standard links for getting your machine calibrated:
 // The following define selects which electronics board you have.
 // Please choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-	#define MOTHERBOARD BOARD_PRINTRBOARD
+	#define MOTHERBOARD BOARD_RAMPS_13_EFB
 #endif
 
 // Define this to set a custom name for your generic Mendel,
@@ -338,12 +335,12 @@ your extruder heater takes 2 minutes to hit the target on heating.
 
 #ifndef ENDSTOPPULLUPS
 	// fine endstop settings: Individual pullups. will be ignored if ENDSTOPPULLUPS is defined
-	// #define ENDSTOPPULLUP_XMAX
+	 #define ENDSTOPPULLUP_XMAX
 	// #define ENDSTOPPULLUP_YMAX
-	 #define ENDSTOPPULLUP_ZMAX  // open pin, inverted
-	 #define ENDSTOPPULLUP_XMIN  // open pin, inverted
+//	 #define ENDSTOPPULLUP_ZMAX  // open pin, inverted
+	// #define ENDSTOPPULLUP_XMIN  // open pin, inverted
 	 #define ENDSTOPPULLUP_YMIN  // open pin, inverted
-	// #define ENDSTOPPULLUP_ZMIN
+//	 #define ENDSTOPPULLUP_ZMIN
 #endif
 
 #ifdef ENDSTOPPULLUPS
@@ -356,12 +353,12 @@ your extruder heater takes 2 minutes to hit the target on heating.
 #endif
 
 // The pullups are needed if you directly connect a mechanical endswitch between the signal and ground pins.
-const bool X_MIN_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
+const bool X_MIN_ENDSTOP_INVERTING = true; // set to true to invert the logic of the endstop.
 const bool Y_MIN_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
-const bool Z_MIN_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
+const bool Z_MIN_ENDSTOP_INVERTING = true; // set to true to invert the logic of the endstop.
 const bool X_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
-const bool Y_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
-const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of the endstop.
+const bool Y_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of the endstop.
+const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
 //#define DISABLE_MAX_ENDSTOPS
 //#define DISABLE_MIN_ENDSTOPS
 
@@ -394,8 +391,8 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // ENDSTOP SETTINGS:
 // Sets direction of endstops when homing; 1=MAX, -1=MIN
 #define X_HOME_DIR 1
-#define Y_HOME_DIR 1
-#define Z_HOME_DIR -1
+#define Y_HOME_DIR -1
+#define Z_HOME_DIR 1
 
 #define min_software_endstops true // If true, axis won't move to coordinates less than HOME_POS.
 #define max_software_endstops true // If true, axis won't move to coordinates greater than the defined lengths below.
@@ -403,10 +400,10 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // Travel limits after homing (units are in mm)
 #define X_MAX_POS 200
 #define X_MIN_POS 0
-#define Y_MAX_POS 100
+#define Y_MAX_POS 200
 #define Y_MIN_POS 0
-#define Z_MAX_POS 100
-#define Z_MIN_POS MANUAL_Z_HOME_POS
+#define Z_MAX_POS MANUAL_Z_HOME_POS
+#define Z_MIN_POS 0
 
 #define X_MAX_LENGTH (X_MAX_POS - X_MIN_POS)
 #define Y_MAX_LENGTH (Y_MAX_POS - Y_MIN_POS)
@@ -550,7 +547,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // For SCARA: Effector Offset between Manual_*_Homing_Pos and Bed X=0 / Y=0
 #define MANUAL_X_HOME_POS SCARA_offset_x // Presumably centered to bed
 #define MANUAL_Y_HOME_POS (Linkage_1 + Linkage_2) + SCARA_offset_y  // Arms Extending Outward - Theta at 90 and Psi at 0 deg
-#define MANUAL_Z_HOME_POS 0 // Distance between nozzle and print surface after homing.
+#define MANUAL_Z_HOME_POS 80 // Distance between nozzle and print surface after homing.
 
 
 //// MOVEMENT SETTINGS
@@ -573,7 +570,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // #define EXTRUDER_OFFSET_Y {0.0, 5.00}  // (in mm) for each extruder, offset of the hotend on the Y axis
 
 // The speed change that does not require acceleration (i.e. the software might assume it can be done instantaneously)
-#define DEFAULT_XYJERK                6    // (mm/sec)
+#define DEFAULT_XYJERK                12   // (mm/sec)
 #define DEFAULT_ZJERK                 0.4  // (mm/sec)
 #define DEFAULT_EJERK                 3    // (mm/sec)
 
